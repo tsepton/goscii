@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	"os"
+	"strconv"
 
 	"github.com/nfnt/resize"
 
@@ -14,9 +16,30 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	image = resize.Resize(100, 25, image, resize.NearestNeighbor)
+
+	divider := parseArgs()
+	image = resize.Resize(
+		uint(image.Bounds().Dx()/divider),
+		uint(image.Bounds().Dy()/(divider*2)),
+		image,
+		resize.NearestNeighbor)
 
 	writeFile(asciiArt(image), "output.txt")
+}
+
+func parseArgs() int {
+	if len(os.Args) > 1 {
+		if arg, err := strconv.ParseInt(os.Args[1], 10, 0); err != nil {
+			fmt.Println("Warning: argument specified incorrect, it must be an integer")
+		} else if arg < 1 {
+			fmt.Println("Warning: argument specified incorrect, it must be superior to 0")
+		} else {
+			fmt.Println("Dividing proportion by ", arg)
+			return int(arg)
+		}
+	}
+	fmt.Println("Keeping original proportion")
+	return 1
 }
 
 func readFile(path string) (image.Image, error) {
