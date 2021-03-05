@@ -1,6 +1,5 @@
 # GOSCII
-> A dead simple ASCII art generator written in Go.
-
+> A dead simple _from image to ASCII art_ generator written in Go.
 
 
 <pre>
