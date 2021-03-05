@@ -40,7 +40,7 @@ Obviously you will need Golang installed on your machine.
 
 ```bash
 go get ./...
-go run main.go [-i input] [-o output] [-d int (optionnal)] 
+go run main.go [-i input] [-o output] [-d int] 
 ```
 
 ###### Flags
@@ -49,7 +49,7 @@ go run main.go [-i input] [-o output] [-d int (optionnal)]
 
 `-o` is to indicate the path to the future txt file containing the ASCII.
 
-`-d` flag is for to indicate the int by which the size of the image will be divided.
+`-d` (optional) is to indicate the int by which the height and the width of the image will be divided (strictly positive, default is 1).
 
 
 
