@@ -9,6 +9,7 @@ import (
 
 	"github.com/nfnt/resize"
 
+	_ "image/jpeg"
 	_ "image/png"
 )
 
@@ -26,7 +27,7 @@ func main() {
 	}
 	image = resize.Resize(
 		uint(image.Bounds().Dx()/divider),
-		uint(image.Bounds().Dy()/(divider*2)),
+		uint(image.Bounds().Dy()/(int(float64(divider)*2.5))),
 		image,
 		resize.NearestNeighbor)
 
@@ -107,12 +108,11 @@ func writeFile(ascii string, path string) error {
 	return err
 }
 
-func asciiArt(image image.Image) string {
+func asciiArt(image image.Image) (ascii string) {
 	greyscale := "@%#*+=-:. "
 
 	min := image.Bounds().Min
 	max := image.Bounds().Max
-	var ascii string
 	for col := min.Y; col < max.Y; col++ {
 		for row := min.X; row < max.X; row++ {
 			r, g, b, alpha := image.At(row, col).RGBA()
@@ -126,5 +126,5 @@ func asciiArt(image image.Image) string {
 		}
 		ascii = ascii + "\n"
 	}
-	return ascii
+	return
 }
