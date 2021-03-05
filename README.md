@@ -3,21 +3,6 @@
 
 
 
-## Getting started
-
-Obviously you will need Golang installed on your machine.
-
-```basch
-go get ./...
-go run main.go [<int>] 
-```
-
-Optionnal argument is the int by which the size of the image will be divided.
-
-
-
-
-
 <pre>
                                    @@@@@@@@%%%##********###%%%@@@@@@@                               
                             @@@@@%#*+=--:::::::::::::::::::::::::--=+*%@@@@                         
@@ -46,3 +31,28 @@ Optionnal argument is the int by which the size of the image will be divided.
      @#::::::::::::::::::::::::::::::::::::-#- .-*#-  .++:::::::::::::::::::::::::::::::::::::-@    
      @%:::::::::::::::::::::::::::::::::::::-+++=::++++=::::::::::::::::::::::::::::::::::::::-@    
 </pre>
+
+
+
+## Documentation
+
+Obviously you will need Golang installed on your machine.
+
+```bash
+go get ./...
+go run main.go [-i input] [-o output] [-d int (optionnal)] 
+```
+
+###### Flags
+
+`-i` is to indicate the path to the input image (png or jpeg).
+
+`-o` is to indicate the path to the future txt file containing the ASCII.
+
+`-d` flag is for to indicate the int by which the size of the image will be divided.
+
+
+
+## License 
+
+Provided under the MIT Licensed.

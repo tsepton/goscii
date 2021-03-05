@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"image"
 	"os"
@@ -12,34 +13,74 @@ import (
 )
 
 func main() {
-	image, err := readFile("./gopher.png")
+	input, output, divider, err := parseArgs()
+	if err != nil {
+		fmt.Println(err.Error())
+		showHelp()
+		os.Exit(2)
+	}
+
+	image, err := readFile(input)
 	if err != nil {
 		panic(err.Error())
 	}
-
-	divider := parseArgs()
 	image = resize.Resize(
 		uint(image.Bounds().Dx()/divider),
 		uint(image.Bounds().Dy()/(divider*2)),
 		image,
 		resize.NearestNeighbor)
 
-	writeFile(asciiArt(image), "output.txt")
+	writeFile(asciiArt(image), output)
 }
 
-func parseArgs() int {
-	if len(os.Args) > 1 {
-		if arg, err := strconv.ParseInt(os.Args[1], 10, 0); err != nil {
-			fmt.Println("Warning: argument specified incorrect, it must be an integer")
-		} else if arg < 1 {
-			fmt.Println("Warning: argument specified incorrect, it must be superior to 0")
-		} else {
-			fmt.Println("Dividing proportion by ", arg)
-			return int(arg)
+func parseArgs() (input string, output string, divider int, err error) {
+	divider = 1 // default value is 0, change it to 1...
+	if len(os.Args) > 2 {
+		if len(os.Args[1:])%2 != 0 {
+			err = errors.New("Missing value for a specified flag.")
+			return
 		}
+		for index, value := 1, 2; value < len(os.Args); index, value = index+2, value+2 {
+			switch os.Args[index] {
+			case "-i":
+				input = os.Args[value]
+			case "-o":
+				output = os.Args[value]
+			case "-d":
+				divider, err = parseDivider(os.Args[value])
+			default:
+				err = errors.New("Unknown argument specified.")
+				return
+			}
+		}
+	} else {
+		err = errors.New("No arguments were specified.")
+		return
 	}
-	fmt.Println("Keeping original proportion")
-	return 1
+	if output == "" || input == "" {
+		err = errors.New("Missing input and/or output files.")
+		return
+	}
+	return
+}
+
+func showHelp() {
+	fmt.Println("[-f file] [-o output] [-d int]")
+	fmt.Println("	-i input  | jpg or png input ")
+	fmt.Println("	-o output | output text file ")
+	fmt.Println("	-d int    | (optional) int by which original file ratio will be divided ")
+}
+
+func parseDivider(args string) (int, error) {
+	if divider, err := strconv.ParseInt(args, 10, 0); err != nil {
+		return 0,
+			errors.New("Warning: argument specified incorrect, it must be an integer")
+	} else if divider < 1 {
+		return 0,
+			errors.New("Warning: argument specified incorrect, it must be superior to 0")
+	} else {
+		return int(divider), nil
+	}
 }
 
 func readFile(path string) (image.Image, error) {
