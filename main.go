@@ -4,10 +4,9 @@ import (
 	"image"
 	"os"
 
-	"image/color"
-	_ "image/png"
-
 	"github.com/nfnt/resize"
+
+	_ "image/png"
 )
 
 func main() {
@@ -45,16 +44,21 @@ func writeFile(ascii string, path string) error {
 }
 
 func asciiArt(image image.Image) string {
-	greyscale := " .:-=+*#%@"
+	greyscale := "@%#*+=-:. "
 
 	min := image.Bounds().Min
 	max := image.Bounds().Max
 	var ascii string
 	for col := min.Y; col < max.Y; col++ {
 		for row := min.X; row < max.X; row++ {
-			grey := color.GrayModel.Convert(image.At(row, col)).(color.Gray).Y
-			key := int((float64(grey) / 255) * float64(len(greyscale)-1))
-			ascii = ascii + string(greyscale[int(key)])
+			r, g, b, alpha := image.At(row, col).RGBA()
+			if alpha == 0 {
+				ascii = ascii + string(' ')
+				continue
+			}
+			grey := (19595*r + 38470*g + 7471*b + 1<<15) >> 24
+			key := int(float64(grey) / 255.0 * float64(len(greyscale)-1))
+			ascii = ascii + string(greyscale[key])
 		}
 		ascii = ascii + "\n"
 	}
