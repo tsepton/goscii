@@ -50,4 +50,4 @@ go run main.go [-i input] [-o output] [-d int]
 
 ## License 
 
-Provided under the MIT Licensed.
+Provided under the MIT License.
